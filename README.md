@@ -1,4 +1,4 @@
-# Projeto para o teste Engineering
+# Projeto para exercitar conhecimentos
 
 Criação do projeto API agenda telefônica.
 
