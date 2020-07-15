@@ -6,6 +6,11 @@ export class ContactModel implements CollectionModel {
     name: string;
     phone: string;
     photo: string;
+    nickName: string;
+    work: string;
+    email: string;
+    webSite: string;
+    isFavorite: number;
     active?: boolean;
     wasSync?: number;
 
@@ -25,7 +30,22 @@ export const ContactSchema = {
     },
     photo: {
         type: String,
-        required: [true, 'O campo photo é obrigatório']
+    },
+    nickName: {
+        type: String,
+    },
+    work: {
+        type: String,
+    },
+    email: {
+        type: String,
+    },
+    webSite: {
+        type: String,
+    },
+    isFavorite: {
+        type: Number,
+        default: 0
     },
     active: {
         type: Boolean,

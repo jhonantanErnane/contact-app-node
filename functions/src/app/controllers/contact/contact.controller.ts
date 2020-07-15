@@ -86,12 +86,6 @@ export class ContactController implements IController {
             res.status(400).send(error);
         }
 
-        // this.service.update(contacts)
-        //     .then(updatedUser => {
-        //         res.send(updatedUser);
-        //     }).catch(err => {
-        //         res.status(400).send(err);
-        //     });
     }
 
     delete = (req: Request, res: Response, next: NextFunction) => {
