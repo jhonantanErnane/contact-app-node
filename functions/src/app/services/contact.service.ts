@@ -26,10 +26,8 @@ export class ContactService {
             const contacts = new Array<ContactModel>();
             const refContacts = await this.collection.get();
             refContacts.docs.forEach(doc => {
-                if (doc.id !== 'QQ2xXY1Dy9JMZsgRu0ZA') {
-                    const contact = doc.data() as ContactModel;
-                    contacts.push(contact);
-                }
+                const contact = doc.data() as ContactModel;
+                contacts.push(contact);
             });
             return contacts;
         } catch (error) {
@@ -50,6 +48,16 @@ export class ContactService {
     };
 
     create = async (contacts: Array<ContactModel>): Promise<ResponseModel> => {
+
+        contacts = contacts.map(contact => {
+            const validateResult = this.schema.validateSave(contact);
+            if (validateResult.hasError) {
+                throw new ServerError(validateResult.erros, 400);
+            } else {
+                return validateResult.model;
+            }
+        });
+
         try {
             const response: ResponseModel = {
                 deleteLocalData: false,
@@ -72,7 +80,7 @@ export class ContactService {
             if (response.deleteLocalData) {
                 response.contacts = listContacts;
             }
-            
+
             contacts.forEach(async (contact, i) => {
                 contact.wasSync = 1;
                 contact.id = ++maxId;
@@ -82,7 +90,7 @@ export class ContactService {
                 await this.collection.doc(`${contact.id}`).set(contact);
             });
             // console.log(response);
-            
+
             return response;
         } catch (err) {
             throw new ServerError(err, 400);
