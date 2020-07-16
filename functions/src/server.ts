@@ -6,6 +6,7 @@ import * as cors from "cors";
 import errorHandler = require("errorhandler");
 import methodOverride = require("method-override");
 import { ContactRouter } from "./app/controllers/contact/contact.router";
+import { UserRouter } from "./app/controllers/user/user.router";
 
 /**
  * The server.
@@ -51,6 +52,7 @@ export class Server {
     router = express.Router();
     
     ContactRouter.create('contacts', router);
+    UserRouter.create('user', router);
     this.app.use('/', router);
   }
 }

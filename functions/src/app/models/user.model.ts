@@ -1,7 +1,7 @@
 import { CollectionModel } from "./interface.model";
 
 export class UserModel implements CollectionModel {
-    uid: number;
+    uid: string;
     displayName: string;
     photoUrl: string;
     isAnonymous: boolean;
