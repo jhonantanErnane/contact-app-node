@@ -3,6 +3,8 @@ import { Request, Response, NextFunction } from "express";
 import { ContactService } from "../../services/contact.service";
 import { ContactModel } from "../../models/contact.model";
 import { ResponseModel } from "../../models/response.model";
+import { ServerError } from "../../models/helpers.models";
+import { UserModel } from "../../models/user.model";
 
 export class ContactController implements IController {
 
@@ -29,15 +31,33 @@ export class ContactController implements IController {
     }
 
     create = (req: Request, res: Response, next: NextFunction) => {
-        const contacts = req.body as Array<ContactModel>;
-        this.service.create(contacts).then(resp => {
-            res.send(resp);
-        }).catch(err => {
-            res.status(400).send(err);
-        });
+        const contact = req.body as ContactModel;
+        const user = req['user'] as UserModel;
+        if (contact.idServer === null || contact.idServer === 'null' || contact.idServer === undefined) {
+            this.service.create(contact, user.uid).then(resp => {
+                res.send(resp);
+            }).catch(err => {
+                res.status(400).send(err);
+            });
+        } else {
+            res.status(400).send(new Error('To create a new contact the contact must not have the id server'));
+        }
     }
 
     update = async (req: Request, res: Response, next: NextFunction) => {
+        const contact = req.body as ContactModel;
+        if (contact.idServer === null || contact.idServer === 'null' || contact.idServer === undefined) {
+            res.status(400).send(new Error('To update the contact the contact must have the id server'));
+        } else {
+            this.service.update(contact).then(resp => {
+                res.send(resp);
+            }).catch(err => {
+                res.status(400).send(err);
+            });
+        }
+    }
+
+    updateOld = async (req: Request, res: Response, next: NextFunction) => {
         const contacts = req.body as Array<ContactModel>;
         const contactsTobeCreated = new Array<ContactModel>();
         const contactsTobeUpdated = new Array<ContactModel>();
@@ -54,8 +74,8 @@ export class ContactController implements IController {
                 deleteLocalData: false,
                 contacts: []
             };
-            const contactsCreated = await this.service.create(contactsTobeCreated);
-            const contactsUpdated = await this.service.update(contactsTobeUpdated);
+            const contactsCreated = await this.service.createOld(contactsTobeCreated);
+            const contactsUpdated = await this.service.updateOld(contactsTobeUpdated);
 
             if (contactsCreated.contacts.length > 0 && contactsUpdated.length > 0) {
                 response.deleteLocalData = contactsCreated.deleteLocalData;

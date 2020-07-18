@@ -7,7 +7,7 @@ import { ResponseModel } from "../models/response.model";
 
 
 export class ContactService {
-    schema: SchemaHelper = new SchemaHelper(ContactSchema);
+    schema = new SchemaHelper(ContactSchema);
     private collection = firebase.firestore.collection("contacts");
 
     findById = async (id: string): Promise<ContactModel> => {
@@ -35,7 +35,11 @@ export class ContactService {
         }
     };
 
-    update = async (contacts: Array<ContactModel>): Promise<Array<ContactModel>> => {
+    update = async (contact: ContactModel): Promise<ContactModel> => {
+        return contact;
+    }
+
+    updateOld = async (contacts: Array<ContactModel>): Promise<Array<ContactModel>> => {
         try {
             contacts.forEach(async (contact, i) => {
                 contact.wasSync = 1;
@@ -47,7 +51,31 @@ export class ContactService {
         }
     };
 
-    create = async (contacts: Array<ContactModel>): Promise<ResponseModel> => {
+    create = async (contact: ContactModel, userUuid: string): Promise<ContactModel | ServerError> => {
+        try {
+            
+            const validateResult = this.schema.validateSave(contact);
+            if (validateResult.hasError) {
+                throw new ServerError(validateResult.erros, 400);
+            }
+            
+            // TODO: To define how to store the data
+            // const documentRef = this.collection.doc();
+            // validateResult.model.idServer = documentRef.id;
+
+            // await this.collection.doc(userUuid).set(validateResult.model);
+            // const contactCreated = await this.collection.doc(userUuid).get();
+            // return contactCreated.data() as ContactModel;
+
+
+            // await documentRef.set(validateResult.model);
+            // const contactCreated = await documentRef.get();
+        } catch (error) {
+            throw new ServerError(error, 400);
+        }
+    }
+
+    createOld = async (contacts: Array<ContactModel>): Promise<ResponseModel> => {
 
         contacts = contacts.map(contact => {
             const validateResult = this.schema.validateSave(contact);
