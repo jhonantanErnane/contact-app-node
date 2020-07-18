@@ -4,7 +4,7 @@ export class ContactModel implements CollectionModel {
     id: number;
     idServer?: string;
     name: string;
-    phone: string;
+    phoneNumber: string;
     photo: string;
     nickName: string;
     work: string;
@@ -24,9 +24,9 @@ export const ContactSchema = {
         type: String,
         required: [true, 'O campo nome é obrigatório']
     },
-    phone: {
+    phoneNumber: {
         type: String,
-        required: [true, 'O campo phone é obrigatório']
+        required: [true, 'O campo phoneNumber é obrigatório']
     },
     photo: {
         type: String,

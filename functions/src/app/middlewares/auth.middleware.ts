@@ -3,15 +3,13 @@ import firebase from '../config/database';
 import { UserService } from "../services/user.service";
 
 export function auth(req: Request, res: Response, next: NextFunction) {
-  if ((!req.headers.authorization ||
-    !req.headers.authorization.startsWith('Bearer '))) {
-      res.status(403).send('Unauthorized');
-      return;
+  if ((!req.headers.authorization || !req.headers.authorization.startsWith('Bearer '))) {
+    res.status(403).send('Unauthorized');
+    return;
   }
 
   let idToken: string;
-  if (req.headers.authorization &&
-      req.headers.authorization.startsWith('Bearer ')) {
+  if (req.headers.authorization && req.headers.authorization.startsWith('Bearer ')) {
     idToken = req.headers.authorization.split('Bearer ')[1];
   }
 
@@ -19,7 +17,7 @@ export function auth(req: Request, res: Response, next: NextFunction) {
     .then(decodedIdToken => {
       new UserService().findById(decodedIdToken.uid)
         .then(user => {
-          if(user) {
+          if (user) {
             req['user'] = user;
           } else {
             req['user'] = decodedIdToken;
@@ -28,10 +26,9 @@ export function auth(req: Request, res: Response, next: NextFunction) {
         }).catch(err => {
           console.log(err);
           res.status(403).send('Unauthorized');
-        }); 
-      })
-      .catch(error => {
-        console.log(error);
-        res.status(403).send('Unauthorized');
+        });
+    }).catch(error => {
+      console.log(error);
+      res.status(403).send('Unauthorized');
     });
 }

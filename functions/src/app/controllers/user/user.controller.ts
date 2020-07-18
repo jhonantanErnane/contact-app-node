@@ -15,10 +15,11 @@ export class UserController implements IController {
     }
 
     getById = (req: Request, res: Response, next: NextFunction) => {
-        if (req['user']?.id) {
-            this.service.findById(req['user'].id).then(resp => {
+        if (req['user']?.uid) {
+            this.service.findById(req['user'].uid).then(resp => {
                 res.send(resp);
             }).catch(err => {
+                console.log(err);
                 res.status(400).send(err);
             });
         } else {
