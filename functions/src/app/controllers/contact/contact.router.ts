@@ -7,7 +7,7 @@ export class ContactRouter {
 
   public static create(path: string, router: Router) {
     router
-      .get(`/${path}/bkp`, auth, this.controller.getBkp)
+      .get(`/${path}/`, auth, this.controller.getAll)
       .post(`/${path}/`, auth, this.controller.create)
   }
 }

@@ -35,9 +35,5 @@ export const UserSchema = {
         type: Date,
         auto: true,
         onUpdate: true
-    },
-    statusAccout: {
-        type: Number,
-        default: 1
-    },
+    }
 };

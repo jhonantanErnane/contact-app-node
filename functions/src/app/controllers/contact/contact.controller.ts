@@ -14,16 +14,18 @@ export class ContactController implements IController {
         return new ContactController();
     }
 
-    getAll(req: Request, res: Response, next: NextFunction) {
-        throw new Error("Method not implemented.");
-    }
-
-    getBkp = (req: Request, res: Response, next: NextFunction) => {
-        this.service.find().then(resp => {
-            res.send(resp);
+    getAll = (req: Request, res: Response, next: NextFunction) => {
+        const user = req['user'] as UserModel;
+        console.log('this.service ', this.service);
+        
+        this.service.findByUserId(user.uid).then(contacts => {
+            res.send(contacts);
         }).catch(err => {
             res.status(400).send(err);
         });
+    }
+
+    getBkp = (req: Request, res: Response, next: NextFunction) => {
     }
 
     getById = (req: Request, res: Response, next: NextFunction) => {
@@ -34,8 +36,8 @@ export class ContactController implements IController {
         const contact = req.body as ContactModel;
         const user = req['user'] as UserModel;
         if (contact.idServer === null || contact.idServer === 'null' || contact.idServer === undefined) {
-            this.service.create(contact, user.uid).then(resp => {
-                res.send(resp);
+            this.service.create(contact, user.uid).then(contactSaved => {
+                res.send(contactSaved);
             }).catch(err => {
                 res.status(400).send(err);
             });

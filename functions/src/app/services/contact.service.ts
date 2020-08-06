@@ -8,7 +8,7 @@ import { ResponseModel } from "../models/response.model";
 
 export class ContactService {
     schema = new SchemaHelper(ContactSchema);
-    private collection = firebase.firestore.collection("contacts");
+    private collection = firebase.firestore.collection('contacts');
 
     findById = async (id: string): Promise<ContactModel> => {
         const refUser = await this.collection.doc(id).get();
@@ -20,6 +20,7 @@ export class ContactService {
 
         return null;
     };
+
 
     find = async (): Promise<Array<ContactModel>> => {
         try {
@@ -34,6 +35,23 @@ export class ContactService {
             throw new ServerError(error, 400);
         }
     };
+
+    findByUserId = async (userUuid: string): Promise<Array<ContactModel>> => {
+        try {
+            const contacts = new Array<ContactModel>();
+
+            const queryResult = await this.collection.where('userId', '==', userUuid).get();
+            const p2 = queryResult.docs.forEach(doc => {
+                // console.log(doc.id, '=>', doc.data());
+                contacts.push(doc.data() as ContactModel);
+            });
+
+            return contacts;
+        } catch (error) {
+            throw new ServerError(error, 400);
+        }
+    };
+
 
     update = async (contact: ContactModel): Promise<ContactModel> => {
         return contact;
@@ -53,23 +71,19 @@ export class ContactService {
 
     create = async (contact: ContactModel, userUuid: string): Promise<ContactModel | ServerError> => {
         try {
-            
+            contact.userId = userUuid;
             const validateResult = this.schema.validateSave(contact);
             if (validateResult.hasError) {
                 throw new ServerError(validateResult.erros, 400);
             }
-            
-            // TODO: To define how to store the data
-            // const documentRef = this.collection.doc();
-            // validateResult.model.idServer = documentRef.id;
 
-            // await this.collection.doc(userUuid).set(validateResult.model);
-            // const contactCreated = await this.collection.doc(userUuid).get();
-            // return contactCreated.data() as ContactModel;
+            const documentRef = this.collection.doc();
+            validateResult.model.idServer = documentRef.id;
 
+            await this.collection.doc(documentRef.id).set(validateResult.model);
+            const contactCreated = await this.collection.doc(documentRef.id).get();
+            return contactCreated.data() as ContactModel;
 
-            // await documentRef.set(validateResult.model);
-            // const contactCreated = await documentRef.get();
         } catch (error) {
             throw new ServerError(error, 400);
         }

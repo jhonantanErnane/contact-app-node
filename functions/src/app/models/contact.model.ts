@@ -13,6 +13,7 @@ export class ContactModel implements CollectionModel {
     isFavorite: number;
     active?: boolean;
     wasSync?: number;
+    userId: String;
 
     createdAt: Date;
     updatedAt: Date;
@@ -43,6 +44,9 @@ export const ContactSchema = {
     webSite: {
         type: String,
     },
+    userId: {
+        type: String,
+    },
     isFavorite: {
         type: Number,
         default: 0
@@ -64,10 +68,6 @@ export const ContactSchema = {
         type: Date,
         auto: true,
         onUpdate: true
-    },
-    statusAccout: {
-        type: Number,
-        default: 1
-    },
+    }
 
 };
