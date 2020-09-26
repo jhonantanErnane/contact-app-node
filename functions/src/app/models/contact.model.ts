@@ -21,6 +21,10 @@ export class ContactModel implements CollectionModel {
 }
 
 export const ContactSchema = {
+    id: {
+        type: Number,
+        required: [true, 'O campo id é obrigatório']
+    },
     name: {
         type: String,
         required: [true, 'O campo nome é obrigatório']

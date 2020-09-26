@@ -79,6 +79,7 @@ export class ContactService {
 
             const documentRef = this.collection.doc();
             validateResult.model.idServer = documentRef.id;
+            validateResult.model.wasSync = true;
 
             await this.collection.doc(documentRef.id).set(validateResult.model);
             const contactCreated = await this.collection.doc(documentRef.id).get();
